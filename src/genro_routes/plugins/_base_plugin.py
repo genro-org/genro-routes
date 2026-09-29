@@ -49,7 +49,7 @@ Objects
 
 Example::
 
-    from genro_routes.plugins._base_plugin import BasePlugin, MethodEntry
+    from genro_routes.plugins import BasePlugin, MethodEntry
 
     class MyPlugin(BasePlugin):
         plugin_code = "myplugin"

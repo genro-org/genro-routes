@@ -31,9 +31,10 @@ Plugin Registration:
     imports all built-in plugins automatically.
 
 Creating Custom Plugins:
-    Subclass ``BasePlugin`` from ``genro_routes.plugins._base_plugin``::
+    Subclass ``BasePlugin`` from the public ``genro_routes.plugins`` API.
+    ``MethodEntry`` is the supported handler metadata type passed to hooks::
 
-        from genro_routes.plugins._base_plugin import BasePlugin
+        from genro_routes.plugins import BasePlugin, MethodEntry
 
         class MyPlugin(BasePlugin):
             plugin_code = "myplugin"
@@ -42,7 +43,7 @@ Creating Custom Plugins:
             def configure(self, enabled: bool = True, option: str = "default"):
                 pass  # Storage handled by wrapper
 
-            def wrap_handler(self, router, entry, call_next):
+            def wrap_handler(self, router, entry: MethodEntry, call_next):
                 def wrapper(*args, **kwargs):
                     # Custom logic here
                     return call_next(*args, **kwargs)
@@ -51,8 +52,13 @@ Creating Custom Plugins:
         Router.register_plugin(MyPlugin)
 
 Note:
+    The legacy ``_base_plugin`` imports remain available and refer to the
+    same classes. Importing these public names adds no concrete-plugin
+    imports or registrations beyond the main package's existing behavior.
     Do not import concrete plugins here to keep imports side-effect free.
     Concrete plugin modules self-register when imported via the main package.
 """
 
-__all__: list[str] = []
+from ._base_plugin import BasePlugin, MethodEntry
+
+__all__ = ["BasePlugin", "MethodEntry"]

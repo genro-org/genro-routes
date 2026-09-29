@@ -9,6 +9,18 @@ For additional reference, see:
 - [Plugin Development Guide](../guide/plugins.md) - Create custom plugins
 - [Plugin Configuration Guide](../guide/plugin-configuration.md) - Runtime configuration
 
+## External plugin API
+
+```python
+from genro_routes.plugins import BasePlugin, MethodEntry
+```
+
+These are the supported extension types: subclass `BasePlugin` and use
+`MethodEntry` for handler metadata in plugin hooks. See the
+[custom plugin example](../guide/plugins.md#creating-custom-plugins) for
+registration and attachment. The legacy `_base_plugin` imports refer to the
+same classes and remain available for compatibility.
+
 ## PydanticPlugin: strict validation and `_coerce`
 
 <!-- test: test_pydantic_plugin.py::test_strict_by_default_rejects_convertible_string -->
