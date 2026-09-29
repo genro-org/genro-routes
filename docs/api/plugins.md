@@ -49,10 +49,11 @@ svc.route.node("count")("12", _coerce=True)  # OK -> 12
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: genro_routes.plugins.openapi
+.. automodule:: genro_routes.plugins.channel
    :members:
    :undoc-members:
    :show-inheritance:
+   :exclude-members: plugin_code, plugin_description, plugin_default_param
 
 .. automodule:: genro_routes.plugins.pydantic
    :members:

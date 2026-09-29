@@ -113,7 +113,7 @@ assert app.route.node("admin/orders/manage")() == "manage"
 - The same alias can be reused under different parents (`api/orders` vs `admin/orders`)
 - Handlers shared by several surfaces belong in a plain (non-routing) collaborator
   class, or can be exposed as entry aliases via `include()` (see the
-  [Visual Guide](attach-instance-visual-guide.md))
+  [Visual Guide](add-branches-visual-guide.md))
 
 ## Grouping with Section
 
@@ -736,7 +736,7 @@ admin.add_branches({"name": "orders", "instance": AdminOrders()})
 ## Next Steps
 
 - **[Branches Guide](branches.md)** - Lazy/eager subtrees and aliases (declarative hierarchies)
-- **[Visual Guide](attach-instance-visual-guide.md)** - Mermaid diagrams for all connection scenarios
+- **[Visual Guide](add-branches-visual-guide.md)** - Mermaid diagrams for all connection scenarios
 - **[Plugin Configuration](plugin-configuration.md)** - Configure plugins across hierarchies
 - **[Best Practices](best-practices.md)** - Production-ready patterns
 - **[API Reference](../api/reference.md)** - Complete API documentation

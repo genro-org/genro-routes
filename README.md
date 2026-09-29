@@ -8,7 +8,7 @@
 [![Tests](https://github.com/genropy/genro-routes/actions/workflows/test.yml/badge.svg)](https://github.com/genropy/genro-routes/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/genropy/genro-routes/branch/main/graph/badge.svg)](https://codecov.io/gh/genropy/genro-routes)
 [![Documentation](https://readthedocs.org/projects/genro-routes/badge/?version=latest)](https://genro-routes.readthedocs.io/en/latest/)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
@@ -369,7 +369,7 @@ genro-routes/
 
 Genro Routes is currently in **beta**. The core API is stable with complete documentation.
 
-- **Python Support**: 3.10, 3.11, 3.12, 3.13
+- **Python Support**: 3.11, 3.12, 3.13
 - **License**: Apache 2.0
 
 ## Current Limitations
