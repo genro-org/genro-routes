@@ -592,6 +592,16 @@ assert "mcp_tool" not in entries
 
 ## Creating Custom Plugins
 
+`genro_routes.plugins` is the supported public import path for external plugin
+authors. Import `BasePlugin` to implement the plugin hooks and `MethodEntry` for
+the handler metadata passed to those hooks. Register the subclass explicitly
+with `Router.register_plugin()` and attach it with `service.route.plug()`.
+
+The legacy imports from `genro_routes.plugins._base_plugin` remain compatible:
+both paths expose the same class objects. The public re-exports add no concrete
+plugin imports or registrations; the main package still registers its built-in
+plugins as before.
+
 Extend `BasePlugin` and implement hooks. Every plugin **must** define two class attributes:
 
 - `plugin_code` - unique identifier used for registration (e.g. `"logging"`)
@@ -601,7 +611,7 @@ Extend `BasePlugin` and implement hooks. Every plugin **must** define two class 
 
 ```python
 from genro_routes import Router, RoutingClass, route
-from genro_routes.plugins._base_plugin import BasePlugin
+from genro_routes.plugins import BasePlugin, MethodEntry
 
 class CapturePlugin(BasePlugin):
     # Required class attributes
@@ -623,11 +633,11 @@ class CapturePlugin(BasePlugin):
         """
         pass
 
-    def on_decore(self, router, func, entry):
+    def on_decore(self, router, func, entry: MethodEntry):
         """Called once when handler is registered."""
         entry.metadata["capture"] = True
 
-    def wrap_handler(self, router, entry, call_next):
+    def wrap_handler(self, router, entry: MethodEntry, call_next):
         """Called to build middleware chain."""
         def wrapper(*args, **kwargs):
             self.calls.append(entry.name)
@@ -1235,7 +1245,7 @@ Real-world plugin with configuration and state:
 ```python
 import inspect
 from genro_routes import Router, RoutingClass, route
-from genro_routes.plugins._base_plugin import BasePlugin
+from genro_routes.plugins import BasePlugin
 
 class AuthPlugin(BasePlugin):
     plugin_code = "auth"
