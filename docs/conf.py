@@ -78,7 +78,6 @@ exclude_patterns = [
     ".DS_Store",
     "dev-notes",
     "temp",
-    "ARCHITECTURE.md",  # Internal architecture notes, not for public docs
 ]
 
 # Strict mode: no warnings suppressed

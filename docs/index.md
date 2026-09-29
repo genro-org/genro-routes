@@ -83,6 +83,9 @@ guide/plugins
 guide/plugin-configuration
 guide/hierarchies
 guide/branches
+guide/add-branches-visual-guide
+guide/context
+guide/why-one-name-per-operation
 guide/best-practices
 ```
 
@@ -93,6 +96,7 @@ guide/best-practices
 api/reference
 api/plugins
 ARCHITECTURE
+CODE_READING_GUIDE
 ```
 
 ## Installation
@@ -120,7 +124,7 @@ pip install -e ".[all]"
 
 Genro Routes is currently in **beta**. The core API is stable with complete documentation.
 
-- **Python Support**: 3.10, 3.11, 3.12, 3.13
+- **Python Support**: 3.11, 3.12, 3.13
 - **License**: Apache 2.0
 
 ## Contributing
