@@ -18,7 +18,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "genro-routes"
-version = "0.30.0"
+version = "0.30.1"
 description = "Instance-scoped routing engine for Python with hierarchical handlers and composable plugins"
 readme = "README.md"
 license = "Apache-2.0"
