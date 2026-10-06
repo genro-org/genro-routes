@@ -19,7 +19,7 @@ decoration time.
 
 ``route(*, name=None, endpoint_id=None, media_type=None, **kwargs)``
     Returns a decorator storing metadata on the function under
-    ``_route_decorator_kw`` as a list of dicts. All markers belong to the
+    ``_route_decorator_kw`` as a single dict. The marker belongs to the
     class's single router (one router per RoutingClass).
 
     - Explicit logical name: if ``name`` is provided, the payload sets
@@ -30,8 +30,8 @@ decoration time.
       and surfaced both at runtime (``RouterNode.metadata``) and in the neutral
       ``result`` block of ``nodes()``.
     - Extra ``**kwargs`` are copied verbatim into the payload (e.g. plugin flags).
-    - Stacking the decorator registers the same function under multiple
-      entry names (aliases).
+    - One ``@route`` per function: a second decorator applied to the same
+      function raises ``TypeError`` at decoration time.
     - The decorator returns the original function unchanged aside from the marker.
 
 Re-exports
@@ -70,8 +70,14 @@ def route(
             ``result`` block of ``nodes()``.
         **kwargs: Extra metadata merged into handler entry (e.g. plugin flags).
 
+    Only one ``@route`` is allowed per function: applying a second one raises
+    ``TypeError`` at decoration time.
+
     Returns:
         Decorator that marks the function for the router.
+
+    Raises:
+        TypeError: If the function already carries a ``@route`` marker.
 
     Example::
 
@@ -90,7 +96,11 @@ def route(
     """
 
     def decorator(func: Callable) -> Callable:
-        markers = list(getattr(func, "_route_decorator_kw", []))
+        if hasattr(func, "_route_decorator_kw"):
+            raise TypeError(
+                f"@route applied twice to {func.__name__!r}: "
+                "a function can carry only one @route decorator"
+            )
         payload: dict[str, Any] = {}
         if name is not None:
             payload["entry_name"] = name
@@ -100,8 +110,7 @@ def route(
             payload["meta_media_type"] = media_type
         for key, value in kwargs.items():
             payload[key] = value
-        markers.append(payload)
-        setattr(func, "_route_decorator_kw", markers)  # noqa: B010
+        setattr(func, "_route_decorator_kw", payload)  # noqa: B010
         return func
 
     return decorator

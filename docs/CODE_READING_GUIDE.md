@@ -112,7 +112,7 @@ def handle_detail(self, order_id: int):
 
 ### What it does
 
-Appends a dict to the list `func._route_decorator_kw`. It touches no router,
+Stores a dict on `func._route_decorator_kw`. It touches no router,
 imports no heavy module, and returns the function **unchanged**.
 
 ### Why it is surprising
@@ -137,8 +137,8 @@ and let the router discover the markers later (lazy binding).
   `get_url()`. Any extra `**kwargs` (e.g. `auth="admin"`,
   `logging_before=False`) are copied verbatim into the payload and later
   dispatched to plugins.
-- **Stackable**: multiple `@route` on the same function create multiple markers
-  → the same function is registered under multiple entry names (aliases).
+- **One per function**: a function carries a single `@route` marker. Applying
+  a second `@route` to the same function raises `TypeError` at decoration time.
 
 ---
 
@@ -232,7 +232,7 @@ operation), `_bind()` runs and executes `add_entry("*")`.
    carrying the `_route_decorator_kw` attribute
 3. Deduplicates by method name (MRO priority) and by function identity
    (so a class-level alias of the same function is not registered twice)
-4. Registers every marker as an entry — **all markers belong to this router**
+4. Registers each function's marker as an entry — **every marker belongs to this router**
    (one router per class, so there is no per-router filtering)
 
 **Why lazy**: the order of router and plugin setup inside `__init__` does not
