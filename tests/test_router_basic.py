@@ -396,3 +396,57 @@ class TestDefaultEntry:
         # Both should work identically
         assert root.route.node("child/handler")() == "child handler"
         assert root.route.node("/child/handler")() == "child handler"
+
+
+class TestSingleRouteMarker:
+    """A function carries one @route marker; a second decorator is refused."""
+
+    def test_second_route_raises_at_decoration(self):
+        with pytest.raises(TypeError) as excinfo:
+
+            class Svc(RoutingClass):
+                @route(name="second")
+                @route(name="first")
+                def op(self):
+                    return "ok"
+
+        assert "op" in str(excinfo.value)
+
+    def test_single_route_registers_the_entry(self):
+        class Svc(RoutingClass):
+            @route()
+            def op(self):
+                return "ok"
+
+        svc = Svc()
+        assert set(svc.route.nodes()["entries"].keys()) == {"op"}
+        assert svc.route.node("op")() == "ok"
+
+    def test_explicit_name_still_wins(self):
+        class Svc(RoutingClass):
+            @route(name="custom")
+            def op(self):
+                return "ok"
+
+        svc = Svc()
+        assert set(svc.route.nodes()["entries"].keys()) == {"custom"}
+        assert svc.route.node("custom")() == "ok"
+
+    def test_lazy_branch_leaves_read_from_single_marker(self):
+        class Leaf(RoutingClass):
+            @route()
+            def ping(self):
+                return "pong"
+
+            @route(name="renamed")
+            def info(self):
+                return "info"
+
+        class Root(RoutingClass):
+            def __init__(self):
+                self.add_branches({"name": "leaf", "cls": Leaf, "params": {}})
+
+        root = Root()
+        branch = root.route.nodes()["routers"]["leaf"]
+        assert branch.get("lazy") is True
+        assert set(branch["entries"].keys()) == {"ping", "renamed"}

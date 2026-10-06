@@ -50,7 +50,7 @@ Marker discovery
 ----------------
 ``_iter_marked_methods`` walks the MRO of ``type(owner)`` (child classes
 first, so derived overrides win), scans ``__dict__`` for plain functions
-carrying ``_route_decorator_kw`` markers. All markers belong to this router.
+carrying a ``_route_decorator_kw`` marker. Every marker belongs to this router.
 
 Handler table and wrapping
 --------------------------
@@ -384,8 +384,8 @@ class BaseRouter(RouterInterface):
     ) -> None:
         """Discover and register all @route-decorated methods for this router.
 
-        Iterates through methods with _route_decorator_kw markers matching
-        this router's name and registers each as an entry.
+        Iterates through methods carrying a _route_decorator_kw marker and
+        registers each as an entry.
         """
         for func, marker in self._iter_marked_methods():
             entry_override = marker.pop("entry_name", None)
@@ -434,7 +434,7 @@ class BaseRouter(RouterInterface):
         """Yield (func, marker_dict) for methods decorated with @route.
 
         Walks the MRO (child classes first) and scans __dict__ for functions
-        carrying _route_decorator_kw markers. All markers belong to this
+        carrying a _route_decorator_kw marker. Every marker belongs to this
         router (one router per class).
         """
         cls = type(self.instance)
@@ -456,11 +456,10 @@ class BaseRouter(RouterInterface):
                 if func_id in seen_funcs:
                     continue
                 seen_funcs.add(func_id)
-                markers = getattr(value, "_route_decorator_kw", None)
-                if not markers:
+                marker = getattr(value, "_route_decorator_kw", None)
+                if marker is None:
                     continue
-                for marker in markers:
-                    yield value, dict(marker)
+                yield value, dict(marker)
 
     def _resolve_name(self, func_name: str, *, name_override: str | None) -> str:
         """Compute the logical entry name from the function name.
@@ -727,7 +726,7 @@ class BaseRouter(RouterInterface):
     def _branch_class_leaves(self, cls: type) -> dict[str, Any]:
         """Collect a lazy branch's ``@route`` leaves from the CLASS alone.
 
-        Reads the class-level ``_route_decorator_kw`` markers without building an
+        Reads the class-level ``_route_decorator_kw`` marker without building an
         instance, so ``nodes()`` can describe a lazy branch's leaves cheaply.
         """
         entries: dict[str, Any] = {}
@@ -742,17 +741,16 @@ class BaseRouter(RouterInterface):
                 if func_id in seen_funcs:
                     continue
                 seen_funcs.add(func_id)
-                markers = getattr(value, "_route_decorator_kw", None)
-                if not markers:
+                marker = getattr(value, "_route_decorator_kw", None)
+                if marker is None:
                     continue
-                for marker in markers:
-                    entry_name = marker.get("entry_name") or attr_name
-                    entries[entry_name] = {
-                        "name": entry_name,
-                        "callable": value,
-                        "metadata": {},
-                        "doc": inspect.getdoc(value) or "",
-                    }
+                entry_name = marker.get("entry_name") or attr_name
+                entries[entry_name] = {
+                    "name": entry_name,
+                    "callable": value,
+                    "metadata": {},
+                    "doc": inspect.getdoc(value) or "",
+                }
         return entries
 
     def _include_node(self, source: Any, name: str | None) -> None:

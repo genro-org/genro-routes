@@ -70,6 +70,20 @@ assert api.route.node("alt_name")() == "executed"
 
 **Registration happens automatically**: the router discovers marked methods lazily on first use — no explicit bind call, and no `__init__` needed unless you configure plugins or router options.
 
+<!-- test: test_router_basic.py::TestSingleRouteMarker::test_second_route_raises_at_decoration -->
+
+**One `@route` per method**: a function carries a single marker. Applying the decorator twice to the same function raises `TypeError` at decoration time:
+
+```python
+class API(RoutingClass):
+    @route(name="second")
+    @route(name="first")      # TypeError: @route applied twice to 'action'
+    def action(self):
+        return "executed"
+```
+
+To expose one handler under a second name, alias it with `include()`.
+
 ## One Class, One Router
 
 <!-- test: test_router_basic.py::TestSingleRouterDefault::test_route_without_args_uses_single_router -->

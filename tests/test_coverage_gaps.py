@@ -1469,7 +1469,7 @@ def test_add_entry_star_with_plugin_options():
             return "ok"
 
     # Mark the method BEFORE instantiation
-    SvcForPluginOpts.my_handler._route_decorator_kw = [{}]
+    SvcForPluginOpts.my_handler._route_decorator_kw = {}
 
     svc = SvcForPluginOpts()
     api = BaseRouter(svc)
